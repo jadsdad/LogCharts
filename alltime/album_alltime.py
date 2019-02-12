@@ -11,7 +11,7 @@ def run():
     sql += "FROM log INNER JOIN albumlengths on log.albumid = albumlengths.albumid "
     sql += "INNER JOIN album on albumlengths.albumid = album.albumid "
     sql += "JOIN (SELECT COUNT(log.logid) as TotalPlays, SUM(albumlengths.albumlength) as TotalTime FROM log inner join albumlengths on log.albumid = albumlengths.albumid) Totals "
-    sql += "WHERE album.albumtypeid <> 16 GROUP BY Artist, Album;"
+    sql += "WHERE album.albumtypeid <> 16 and log.logdate >= '2017-01-01' GROUP BY Artist, Album;"
 
     chart = pd.read_sql(sql, common.conn)
 
@@ -29,7 +29,7 @@ def run():
     full_dir = os.path.join(common.basedir, 'All Time')
     if not os.path.exists(full_dir):
         os.makedirs(full_dir)
-    with open(os.path.join(full_dir, base_filename), 'w') as outfile:
+    with open(os.path.join(full_dir, base_filename), 'w', encoding='utf-8') as outfile:
         header = "{:<5}{:<80}{:>10}{:>10}{:>10}\n".format("RANK", "", "TIME", "FREQ", "TOTAL")
         outfile.write(seperator + header + seperator)
 
