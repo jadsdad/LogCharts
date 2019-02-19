@@ -7,7 +7,7 @@ seperator = "-" * 125 + "\n"
 
 def run():
 
-    sql = "SELECT album.artistcredit as Artist, albumlengths.album as Album, count(log.logid) as Plays, sum(albumlengths.albumlength) as Time, Totals.TotalPlays, Totals.TotalTime "
+    sql = "SELECT album.artistcredit as Artist, album.albumid, albumlengths.album as Album, count(log.logid) as Plays, sum(albumlengths.albumlength) as Time, Totals.TotalPlays, Totals.TotalTime "
     sql += "FROM log INNER JOIN albumlengths on log.albumid = albumlengths.albumid "
     sql += "INNER JOIN album on albumlengths.albumid = album.albumid "
     sql += "JOIN (SELECT COUNT(log.logid) as TotalPlays, SUM(albumlengths.albumlength) as TotalTime FROM log inner join albumlengths on log.albumid = albumlengths.albumid) Totals "
@@ -17,13 +17,13 @@ def run():
 
     chart['TimeScore'] = (chart['Time'] / chart['TotalTime']) * 100
     chart['FreqScore'] = (chart['Plays'] / chart['TotalPlays']) * 100
-    chart['WeightedScore'] = (chart['TimeScore'] * 0.5) + (chart['FreqScore'] * 0.5)
+    chart['WeightedScore'] = ((chart['TimeScore'] * 0.5) + (chart['FreqScore'] * 0.5))
 
     chart.sort_values('WeightedScore', ascending=False, inplace=True)
 
     chart['Rank'] = chart['WeightedScore'].rank(ascending=False)
 
-    chart_formatted = chart[['Rank', 'Artist', 'Album', 'TimeScore', 'FreqScore', 'WeightedScore']][:100]
+    chart_formatted = chart[['Rank', 'albumid', 'Artist', 'Album', 'TimeScore', 'FreqScore', 'WeightedScore']][:100]
     chart_array = chart_formatted.values.tolist()
     base_filename = "Album Chart (All Time).txt"
     full_dir = os.path.join(common.basedir, 'All Time')
@@ -34,10 +34,11 @@ def run():
         outfile.write(seperator + header + seperator)
 
         for a in chart_array:
-            rank, artist, album, timescore, freqscore, weightedscore = a
+            rank, albumid, artist, album, timescore, freqscore, weightedscore = a
             textline = "{:<5}{:<80}{:>10.2f}{:>10.2f}{:>10.2f}\n".format(int(rank),
                                                                          common.shorten_by_word(artist.upper() + ": " + album, 80),
                                                                          timescore, freqscore, weightedscore)
+            common.add_chart_history(0,0,0,albumid,rank,weightedscore,0)
             outfile.write(textline)
             outfile.write(seperator)
 
