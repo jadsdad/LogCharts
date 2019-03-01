@@ -4,6 +4,7 @@ from alltime import artist_alltime, album_alltime, album_byformat
 import logtools_common.logtools_common as common
 
 common.execute_sql("TRUNCATE TABLE chart_history;")
+common.execute_sql("CALL playcount_audit;")
 
 artist_annual.run()
 album_annual.run()

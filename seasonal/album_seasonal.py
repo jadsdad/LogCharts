@@ -28,7 +28,7 @@ def run():
             chart_formatted = chart[['Rank', 'albumid', 'Artist', 'Album', 'TimeScore', 'FreqScore', 'WeightedScore']][:30]
             chart_array = chart_formatted.values.tolist()
 
-            base_filename = "Album Chart - Q{}.txt".format(yr, qtr)
+            base_filename = "Album Chart - {} Q{}.txt".format(yr, qtr)
 
             if len(chart_array) > 1:
                 with open(os.path.join(common.basedir, 'Seasonal', 'Album', base_filename),'w', encoding='utf-8') as outfile:
