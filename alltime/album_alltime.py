@@ -11,7 +11,7 @@ def run():
     sql += "FROM log INNER JOIN albumlengths on log.albumid = albumlengths.albumid "
     sql += "INNER JOIN album on albumlengths.albumid = album.albumid "
     sql += "JOIN (SELECT COUNT(log.logid) as TotalPlays, SUM(albumlengths.albumlength) as TotalTime FROM log inner join albumlengths on log.albumid = albumlengths.albumid) Totals "
-    sql += "WHERE album.albumtypeid <> 16 and log.logdate >= '2017-01-01' GROUP BY Artist, Album;"
+    sql += "WHERE album.albumtypeid <> 16 GROUP BY Artist, Album;"
 
     chart = pd.read_sql(sql, common.conn)
 
@@ -23,7 +23,7 @@ def run():
 
     chart['Rank'] = chart['WeightedScore'].rank(ascending=False)
 
-    chart_formatted = chart[['Rank', 'albumid', 'Artist', 'Album', 'TimeScore', 'FreqScore', 'WeightedScore']][:100]
+    chart_formatted = chart[['Rank', 'albumid', 'Artist', 'Album', 'TimeScore', 'FreqScore', 'WeightedScore']][:200]
     chart_array = chart_formatted.values.tolist()
     base_filename = "Album Chart (All Time).txt"
     full_dir = os.path.join(common.basedir, 'All Time')

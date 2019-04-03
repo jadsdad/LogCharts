@@ -12,7 +12,7 @@ def run():
     sql += "INNER JOIN album on albumlengths.albumid = album.albumid "
     sql += "INNER JOIN artist on albumartist.artistid = artist.artistid "
     sql += "JOIN (SELECT COUNT(log.logid) as TotalPlays, SUM(albumlengths.albumlength) as TotalTime FROM log inner join albumlengths on log.albumid = albumlengths.albumid) Totals "
-    sql += "WHERE album.albumtypeid <> 16 and log.logdate >= '2017-01-01' GROUP BY Artist;"
+    sql += "WHERE album.albumtypeid <> 16 GROUP BY Artist;"
 
     chart = pd.read_sql(sql, common.conn)
 

@@ -31,7 +31,11 @@ def run():
             base_filename = "Album Chart - {} Q{}.txt".format(yr, qtr)
 
             if len(chart_array) > 1:
-                with open(os.path.join(common.basedir, 'Seasonal', 'Album', base_filename),'w', encoding='utf-8') as outfile:
+                basedir = os.path.join(common.basedir, 'Seasonal', 'Album')
+                if not os.path.exists(basedir):
+                    os.mkdir(basedir)
+
+                with open(os.path.join(basedir, base_filename),'w', encoding='utf-8') as outfile:
                     header = "{:<5}{:<80}{:>10}{:>10}{:>10}\n".format("RANK","","TIME","FREQ","TOTAL")
                     outfile.write(seperator + header + seperator)
 
