@@ -33,7 +33,7 @@ def run(chart_date=None):
     else:
         last_sunday = chart_date - timedelta(days=chart_date.weekday() + 1)
 
-    date_range = last_sunday - timedelta(weeks=8) + timedelta(days=1)
+    date_range = last_sunday - timedelta(weeks=16) + timedelta(days=1)
 
     sql = "SELECT artist.artistid, artist.artistname as Artist, count(log.logid) as Plays, sum(albumlengths.albumlength) as Time, Totals.TotalPlays, Totals.TotalTime "
     sql += "FROM log INNER JOIN albumartist ON log.albumid = albumartist.albumid "
@@ -54,7 +54,7 @@ def run(chart_date=None):
 
     chart['Rank'] = chart['WeightedScore'].rank(ascending=False)
 
-    chart_formatted = chart[['Rank', 'artistid', 'Artist', 'TimeScore', 'FreqScore', 'WeightedScore']][:20]
+    chart_formatted = chart[['Rank', 'artistid', 'Artist', 'TimeScore', 'FreqScore', 'WeightedScore']][:40]
 
     chart_array = chart_formatted.values.tolist()
     base_filename = "Artist Chart (Rolling) - {}.txt".format(last_sunday.strftime("%Y-%m-%d"))
@@ -99,7 +99,7 @@ def run(chart_date=None):
 
 if __name__ == '__main__':
     common.execute_sql("DELETE FROM chart_history_rolling where artistid <> 0;")
-    start_date = date(2018,2,26)
+    start_date = date(2018,4,9)
     while start_date < date.today():
         run(start_date)
         start_date += timedelta(days=7)
