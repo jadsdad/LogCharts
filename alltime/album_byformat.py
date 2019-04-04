@@ -6,7 +6,7 @@ from datetime import date
 seperator = "-" * 180 + "\n"
 
 def run():
-    for source in ['Vinyl','CD','Cassette (Pre-Recorded)','Cassette (Digital Dub)','Digital']:
+    for source in ['Vinyl','CD','Cassette','Cassette (Dubbed)','Digital']:
         sql = "SELECT album.artistcredit as Artist, albumlengths.album as Album, source.source, count(log.logid) as Plays, sum(albumlengths.albumlength) as Time, Totals.TotalPlays, Totals.TotalTime "
         sql += "FROM log INNER JOIN albumlengths on log.albumid = albumlengths.albumid "
         sql += "INNER JOIN album on albumlengths.albumid = album.albumid " \
