@@ -1,6 +1,8 @@
 from annual import artist_annual, album_annual, album_annual_new
 from seasonal import artist_seasonal, album_seasonal
 from alltime import artist_alltime, album_alltime, album_byformat
+from rolling import artist_rolling, album_rolling
+
 import logtools_common.logtools_common as common
 import os
 from pathlib import Path
@@ -23,7 +25,5 @@ artist_alltime.run()
 album_alltime.run()
 album_byformat.run()
 
-
-
-
-
+album_rolling.run()
+artist_rolling.run()
