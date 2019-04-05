@@ -26,19 +26,19 @@ def get_last_run(artistid):
         return results[0][0]
 
 
-def run(chart_date=None):
+def generate(chart_date=None):
 
     if chart_date is None:
         last_sunday = date.today() - timedelta(days=date.today().weekday() + 1)
     else:
         last_sunday = chart_date - timedelta(days=chart_date.weekday() + 1)
 
-    date_range = last_sunday - timedelta(weeks=16) + timedelta(days=1)
+    date_range = last_sunday - timedelta(weeks=13) + timedelta(days=1)
 
     sql = "SELECT artist.artistid, artist.artistname as Artist, count(log.logid) as Plays, sum(albumlengths.albumlength) as Time, Totals.TotalPlays, Totals.TotalTime "
     sql += "FROM log INNER JOIN albumartist ON log.albumid = albumartist.albumid "
     sql += "INNER JOIN albumlengths on albumartist.albumid = albumlengths.albumid "
-    sql += "INNER JOIN album on albumlengths.albumid = album.albumid "
+    sql += "INNER JOIN albumview as album on albumlengths.albumid = album.albumid "
     sql += "INNER JOIN artist on albumartist.artistid = artist.artistid "
     sql += "JOIN (SELECT COUNT(log.logid) as TotalPlays, SUM(albumlengths.albumlength) as TotalTime FROM log inner join albumlengths on log.albumid = albumlengths.albumid) Totals "
     sql += "WHERE log.logdate BETWEEN '{}' AND '{}' and album.albumtypeid <> 16 GROUP BY Artist;".format(
@@ -60,7 +60,7 @@ def run(chart_date=None):
     base_filename = "Artist Chart (Rolling) - {}.txt".format(last_sunday.strftime("%Y-%m-%d"))
     full_dir = os.path.join(common.basedir, 'Rolling', 'Artist')
 
-    common.execute_sql("DELETE FROM chart_history_rolling WHERE chartdate='{}' AND artistid <> 0;")
+    common.execute_sql("DELETE FROM chart_history_rolling WHERE chartdate='{}' AND artistid <> 0;".format(last_sunday.strftime("%Y-%m-%d")))
 
     if not os.path.exists(full_dir):
         os.makedirs(full_dir)
@@ -97,9 +97,12 @@ def run(chart_date=None):
             outfile.write(textline)
             outfile.write(seperator)
 
-if __name__ == '__main__':
+def run():
     common.execute_sql("DELETE FROM chart_history_rolling where artistid <> 0;")
     start_date = date(2018,4,9)
     while start_date < date.today():
-        run(start_date)
+        generate(start_date)
         start_date += timedelta(days=7)
+
+if __name__ == '__main__':
+    run()

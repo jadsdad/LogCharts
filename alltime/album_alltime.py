@@ -7,9 +7,9 @@ seperator = "-" * 125 + "\n"
 
 def run():
 
-    sql = "SELECT album.artistcredit as Artist, album.albumid, albumlengths.album as Album, count(log.logid) as Plays, sum(albumlengths.albumlength) as Time, Totals.TotalPlays, Totals.TotalTime "
+    sql = "SELECT album.artistcredit as Artist, album.albumid as albumid, albumlengths.album as Album, count(log.logid) as Plays, sum(albumlengths.albumlength) as Time, Totals.TotalPlays, Totals.TotalTime "
     sql += "FROM log INNER JOIN albumlengths on log.albumid = albumlengths.albumid "
-    sql += "INNER JOIN album on albumlengths.albumid = album.albumid "
+    sql += "INNER JOIN albumview as album on albumlengths.albumid = album.albumid "
     sql += "JOIN (SELECT COUNT(log.logid) as TotalPlays, SUM(albumlengths.albumlength) as TotalTime FROM log inner join albumlengths on log.albumid = albumlengths.albumid) Totals "
     sql += "WHERE album.albumtypeid <> 16 GROUP BY Artist, Album;"
 

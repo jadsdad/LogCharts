@@ -13,7 +13,7 @@ def run():
             sql += "FROM log INNER JOIN albumlengths on log.albumid = albumlengths.albumid "
             sql += "INNER JOIN albumartist on albumlengths.albumid = albumartist.albumid "
             sql += "INNER JOIN artist on artist.artistid = albumartist.artistid "
-            sql += "INNER JOIN album on album.albumid = albumartist.albumid "
+            sql += "INNER JOIN albumview as album on album.albumid = albumartist.albumid "
             sql += "JOIN (SELECT COUNT(log.logid) as TotalPlays, SUM(albumlengths.albumlength) as TotalTime FROM log inner join albumlengths on log.albumid = albumlengths.albumid) Totals "
             sql += "WHERE YEAR(log.logdate) = " + str(
                 yr) + " and MONTH(log.logdate) IN (" + monthstring[qtr] + ") and album.albumtypeid <> 16 GROUP BY Artist;"

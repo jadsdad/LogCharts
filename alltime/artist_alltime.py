@@ -9,7 +9,7 @@ def run():
     sql = "SELECT artist.artistid, artist.artistname as Artist, count(log.logid) as Plays, sum(albumlengths.albumlength) as Time, Totals.TotalPlays, Totals.TotalTime "
     sql += "FROM log INNER JOIN albumartist ON log.albumid = albumartist.albumid "
     sql += "INNER JOIN albumlengths on albumartist.albumid = albumlengths.albumid "
-    sql += "INNER JOIN album on albumlengths.albumid = album.albumid "
+    sql += "INNER JOIN albumview as album on albumlengths.albumid = album.albumid "
     sql += "INNER JOIN artist on albumartist.artistid = artist.artistid "
     sql += "JOIN (SELECT COUNT(log.logid) as TotalPlays, SUM(albumlengths.albumlength) as TotalTime FROM log inner join albumlengths on log.albumid = albumlengths.albumid) Totals "
     sql += "WHERE album.albumtypeid <> 16 GROUP BY Artist;"
