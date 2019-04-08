@@ -29,7 +29,10 @@ def generate(chart_date=None):
     if chart_date is None:
         last_sunday = date.today() - timedelta(days=date.today().weekday() + 1)
     else:
-        last_sunday = chart_date - timedelta(days=chart_date.weekday() + 1)
+        if chart_date.weekday() != 6:
+            last_sunday = chart_date - timedelta(days=chart_date.weekday() + 1)
+        else:
+            last_sunday = chart_date
 
     date_range = last_sunday - timedelta(weeks=8) + timedelta(days=1)
 
@@ -91,8 +94,8 @@ def generate(chart_date=None):
 
 def run():
     common.execute_sql("DELETE FROM chart_history_rolling where albumid <> 0;")
-    start_date = date(2018,2,26)
-    while start_date < date.today():
+    start_date = date(2018,2,25)
+    while start_date <= date.today():
         generate(start_date)
         start_date += timedelta(days=7)
 
